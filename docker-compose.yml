@@ -1,0 +1,25 @@
+services:
+  db:
+    image: pgvector/pgvector:pg18-trixie
+    container_name: cv-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-dbuser}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-dbpassword}
+      POSTGRES_DB: ${DATABASE_DB:-dbname}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backend/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DATABASE_USER:-dbuser} -d ${DATABASE_NAME:-dbname}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cv-db:
