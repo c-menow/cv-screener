@@ -1,0 +1,35 @@
+{
+  "name": "RAG for CV screener",
+  "version": "1.0.0",
+  "description": "A RAG app for screening CVs",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "generate-cvs": "tsx src/scripts/generate-cvs.ts",
+    "ingest-cvs": "tsx src/rag/ingest.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@google/genai": "^2.13.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.19.1",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/pdfkit": "^0.17.6",
+    "@types/pg": "^8.20.0",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
