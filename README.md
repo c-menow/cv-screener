@@ -8,6 +8,8 @@ A RAG app for screening CVs. A Gemini-powered pipeline generates a fictional set
 2. **Ingest** — `ingest-cvs` extracts text from each PDF, has Gemini structure it into JSON, splits it into per-section chunks (summary, experience, education, skills), embeds each chunk, and stores it in Postgres.
 3. **Query** — the chat UI sends a question to the backend, which embeds the question, retrieves the most similar chunks via pgvector cosine similarity, groups them back by candidate, and asks Gemini to return only the candidates that actually match, as JSON (`{"matches": [{"name", "email", "reason"}]}`).
 
+## Chat Preview
+
 ![CV Screener chat UI showing a question and a list of matching candidates](preview.png)
 
 ## Tech stack
