@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import Composer from "@/components/Composer";
 import MessageList from "@/components/MessageList";
@@ -21,11 +21,10 @@ export interface Message {
   isError?: boolean;
 }
 
-let nextId = 0;
-const createId = () => `m${nextId++}`;
-
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const nextId = useRef(0);
+  const createId = useCallback(() => `m${nextId.current++}`, []);
 
   const { trigger, isMutating } = useSWRMutation(CHAT_ENDPOINT, chatFetcher);
 
