@@ -8,6 +8,8 @@ A RAG app for screening CVs. A Gemini-powered pipeline generates a fictional set
 2. **Ingest** — `ingest-cvs` extracts text from each PDF, has Gemini structure it into JSON, splits it into per-section chunks (summary, experience, education, skills), embeds each chunk, and stores it in Postgres.
 3. **Query** — the chat UI sends a question to the backend, which embeds the question, retrieves the most similar chunks via pgvector cosine similarity, groups them back by candidate, and asks Gemini to return only the candidates that actually match, as JSON (`{"matches": [{"name", "email", "reason"}]}`).
 
+![CV Screener chat UI showing a question and a list of matching candidates](preview.png)
+
 ## Tech stack
 
 - **Backend** — Node.js / TypeScript, Express, [`@google/genai`](https://www.npmjs.com/package/@google/genai) (Gemini for text generation, embeddings, and image generation), `pg` + [pgvector](https://github.com/pgvector/pgvector) for vector storage, `pdf-parse` / `pdfkit` for reading and writing CVs. Tests run on Vitest.
@@ -68,7 +70,14 @@ This starts a `pgvector/pgvector` Postgres container on port 5432 and runs `back
 
 **2. Configure environment variables**
 
-Create `backend/.env`:
+Copy each `.env.example` and fill in your own values:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+`backend/.env`:
 
 ```bash
 GEMINI_API_KEY=your-gemini-api-key
@@ -83,6 +92,12 @@ DATABASE_URL=postgresql://dbuser:dbpassword@localhost:5432/dbname
 PORT=3000
 TOTAL_CVS=25     # how many CVs `generate-cvs` creates by default
 TOP_K=5          # how many chunks are retrieved per chat question
+```
+
+`frontend/.env`:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000   # must match backend/.env's PORT
 ```
 
 **3. Install dependencies**
@@ -124,6 +139,14 @@ npm run test:watch
 ```
 
 Coverage is on `backend/src/rag/` — chunking, embedding, PDF extraction, storage, and the end-to-end query orchestration — all mocked at the Gemini/Postgres boundary, so no API key or database is needed to run them.
+
+```bash
+cd frontend
+npm test        # runs the Vitest suite once
+npm run test:watch
+```
+
+Coverage is on `frontend/app/page.tsx` and `frontend/components/` (`Composer`, `MessageList`) — sending questions, rendering matches, sources, errors, and suggestion prompts — using Vitest, React Testing Library, and `user-event`, with `services/chat.ts` mocked so no backend is needed to run them.
 
 ## API
 
